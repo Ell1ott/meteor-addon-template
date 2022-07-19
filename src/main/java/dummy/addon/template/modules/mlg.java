@@ -41,7 +41,7 @@ import org.apache.commons.io.filefilter.TrueFileFilter;
 
 import com.ibm.icu.util.BytesTrie.Result;
 
-public class mlg extends Module {
+public class Mlg extends Module {
     private final SettingGroup sgGeneral = settings.getDefaultGroup();
 
     private final Setting<Mode> mode = sgGeneral.add(new EnumSetting.Builder<Mode>()
@@ -70,8 +70,8 @@ public class mlg extends Module {
     private boolean placedWater;
     private int preBaritoneFallHeight;
 
-    public mlg() {
-        super(Categories.Movement, "auto mlg", "Attempts to prevent you from taking fall damage.");
+    public Mlg() {
+        super(Categories.Movement, "mlg", "Attempts to prevent you from taking fall damage.");
     }
 
     @Override
@@ -86,117 +86,117 @@ public class mlg extends Module {
         BaritoneAPI.getSettings().maxFallHeightNoWater.value = preBaritoneFallHeight;
     }
 
-    @EventHandler
-    private void onSendPacket(PacketEvent.Send event) {
-        if (mc.player.getAbilities().creativeMode
-            || !(event.packet instanceof PlayerMoveC2SPacket)
-            || mode.get() != Mode.Packet
-            || ((IPlayerMoveC2SPacket) event.packet).getTag() == 1337) return;
+    // @EventHandler
+    // private void onSendPacket(PacketEvent.Send event) {
+    //     if (mc.player.getAbilities().creativeMode
+    //         || !(event.packet instanceof PlayerMoveC2SPacket)
+    //         || mode.get() != Mode.Packet
+    //         || ((IPlayerMoveC2SPacket) event.packet).getTag() == 1337) return;
 
 
-        // if ((mc.player.isFallFlying() || Modules.get().isActive(Flight.class)) && mc.player.getVelocity().y < 1) {
-        if ((mc.player.isFallFlying()) && mc.player.getVelocity().y < 1) {
-            BlockHitResult result = mc.world.raycast(new RaycastContext(
-                mc.player.getPos(),
-                mc.player.getPos().subtract(0, 0.5, 0),
-                RaycastContext.ShapeType.OUTLINE,
-                RaycastContext.FluidHandling.NONE,
-                mc.player)
-            );
+    //     // if ((mc.player.isFallFlying() || Modules.get().isActive(Flight.class)) && mc.player.getVelocity().y < 1) {
+    //     if ((mc.player.isFallFlying()) && mc.player.getVelocity().y < 1) {
+    //         BlockHitResult result = mc.world.raycast(new RaycastContext(
+    //             mc.player.getPos(),
+    //             mc.player.getPos().subtract(0, 0.5, 0),
+    //             RaycastContext.ShapeType.OUTLINE,
+    //             RaycastContext.FluidHandling.NONE,
+    //             mc.player)
+    //         );
 
-            if (result != null && result.getType() == HitResult.Type.BLOCK) {
-                ((PlayerMoveC2SPacketAccessor) event.packet).setOnGround(true);
-            }
-        }
-        else {
-            ((PlayerMoveC2SPacketAccessor) event.packet).setOnGround(true);
-        }
-    }
+    //         if (result != null && result.getType() == HitResult.Type.BLOCK) {
+    //             ((PlayerMoveC2SPacketAccessor) event.packet).setOnGround(true);
+    //         }
+    //     }
+    //     else {
+    //         ((PlayerMoveC2SPacketAccessor) event.packet).setOnGround(true);
+    //     }
+    // }
 
-    @EventHandler
-    private void onTick(TickEvent.Pre event) {
-        if (mc.player.getAbilities().creativeMode) return;
+    // @EventHandler
+    // private void onTick(TickEvent.Pre event) {
+    //     if (mc.player.getAbilities().creativeMode) return;
 
-        // Airplace mode
-        if (mode.get() == Mode.AirPlace) {
-            // Test if fall damage setting is valid
-            if (!airPlaceMode.get().test(mc.player.fallDistance)) return;
+    //     // Airplace mode
+    //     if (mode.get() == Mode.AirPlace) {
+    //         // Test if fall damage setting is valid
+    //         if (!airPlaceMode.get().test(mc.player.fallDistance)) return;
 
-            // Center and place block
-            if (anchor.get()) PlayerUtils.centerPlayer();
+    //         // Center and place block
+    //         if (anchor.get()) PlayerUtils.centerPlayer();
 
-            Rotations.rotate(mc.player.getYaw(), 90, Integer.MAX_VALUE, () -> {
-                double preY = mc.player.getVelocity().y;
-                ((IVec3d) mc.player.getVelocity()).setY(0);
+    //         Rotations.rotate(mc.player.getYaw(), 90, Integer.MAX_VALUE, () -> {
+    //             double preY = mc.player.getVelocity().y;
+    //             ((IVec3d) mc.player.getVelocity()).setY(0);
 
-                BlockUtils.place(mc.player.getBlockPos().down(), InvUtils.findInHotbar(itemStack -> itemStack.getItem() instanceof BlockItem), false, 0, true);
+    //             BlockUtils.place(mc.player.getBlockPos().down(), InvUtils.findInHotbar(itemStack -> itemStack.getItem() instanceof BlockItem), false, 0, true);
 
-                ((IVec3d) mc.player.getVelocity()).setY(preY);
-            });
-        }
+    //             ((IVec3d) mc.player.getVelocity()).setY(preY);
+    //         });
+    //     }
 
-        // Bucket mode
-        if (mode.get() == Mode.Bucket) {
-            BlockHitResult result = null; // = mc.world.raycast(new RaycastContext(mc.player.getPos(), mc.player.getPos().subtract(0, 5, 0), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
-            if (mc.player.fallDistance > 3 && !EntityUtils.isAboveWater(mc.player)) {
-                // Place water
-                FindItemResult waterBucket = InvUtils.findInHotbar(Items.WATER_BUCKET);
+    //     // Bucket mode
+    //     if (mode.get() == Mode.Bucket) {
+    //         BlockHitResult result = null; // = mc.world.raycast(new RaycastContext(mc.player.getPos(), mc.player.getPos().subtract(0, 5, 0), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+    //         if (mc.player.fallDistance > 3 && !EntityUtils.isAboveWater(mc.player)) {
+    //             // Place water
+    //             FindItemResult waterBucket = InvUtils.findInHotbar(Items.WATER_BUCKET);
 
-                if (!waterBucket.found()) return;
+    //             if (!waterBucket.found()) return;
 
-                BlockHitResult mresult = null; // = mc.world.raycast(new RaycastContext(mc.player.getPos(), mc.player.getPos().subtract(0, 5, 0), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+    //             BlockHitResult mresult = null; // = mc.world.raycast(new RaycastContext(mc.player.getPos(), mc.player.getPos().subtract(0, 5, 0), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
 
-                // Center player
+    //             // Center player
 
-                if (anchor.get()) PlayerUtils.centerPlayer();
-                for (int x = 0; x < 2; x++) {
-                    for (int y = 0; y < 2; y++) {
-                        mresult = mc.world.raycast(new RaycastContext(mc.player.getPos().subtract(x * 0.8 - 0.4, 0, y * 0.8 - 0.4), mc.player.getPos().subtract(x * 0.8 - 0.4, 5, y * 0.8 - 0.4), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
-                        // if (mresult != null && mresult.getType() == HitResult.Type.BLOCK){
-
-
-                        //     if (result == null && mresult.getType() == HitResult.Type.BLOCK){
-                        //         result = mresult;
-                        //     }
-                        //     else if (mresult.getBlockPos().getY() > result.getBlockPos().getY()){
-                        //         result = mresult;
-                        //     }
-                        // }
+    //             if (anchor.get()) PlayerUtils.centerPlayer();
+    //             for (int x = 0; x < 2; x++) {
+    //                 for (int y = 0; y < 2; y++) {
+    //                     mresult = mc.world.raycast(new RaycastContext(mc.player.getPos().subtract(x * 0.8 - 0.4, 0, y * 0.8 - 0.4), mc.player.getPos().subtract(x * 0.8 - 0.4, 5, y * 0.8 - 0.4), RaycastContext.ShapeType.OUTLINE, RaycastContext.FluidHandling.NONE, mc.player));
+    //                     // if (mresult != null && mresult.getType() == HitResult.Type.BLOCK){
 
 
-                        mc.player.sendChatMessage(String.valueOf(x));
-                        if (mresult != null && mresult.getType() == HitResult.Type.BLOCK) {
-                            if (result == null){
-                                result = mresult;
-                            }
-                            else if (mresult.getBlockPos().getY() > result.getBlockPos().getY()) {
-                                result = mresult;
+    //                     //     if (result == null && mresult.getType() == HitResult.Type.BLOCK){
+    //                     //         result = mresult;
+    //                     //     }
+    //                     //     else if (mresult.getBlockPos().getY() > result.getBlockPos().getY()){
+    //                     //         result = mresult;
+    //                     //     }
+    //                     // }
 
 
-                            }
-                        }
+    //                     mc.player.sendChatMessage(String.valueOf(x));
+    //                     if (mresult != null && mresult.getType() == HitResult.Type.BLOCK) {
+    //                         if (result == null){
+    //                             result = mresult;
+    //                         }
+    //                         else if (mresult.getBlockPos().getY() > result.getBlockPos().getY()) {
+    //                             result = mresult;
 
 
-                    }
-                  }
+    //                         }
+    //                     }
 
 
-                // Check if there is a block within 5 blocks
+    //                 }
+    //               }
 
-                // Place water
-                if (result != null && result.getType() == HitResult.Type.BLOCK) {
-                    useBucket(tovec3d(result),
-                    waterBucket,
-                    true);
-                }
 
-            }
-            // Remove water
-            if (placedWater && mc.player.getBlockStateAtPos().getFluidState().getFluid() == Fluids.WATER) {
-                // useBucket(tovec3d(result), InvUtils.findInHotbar(Items.BUCKET), false);
-            }
-        }
-    }
+    //             // Check if there is a block within 5 blocks
+
+    //             // Place water
+    //             if (result != null && result.getType() == HitResult.Type.BLOCK) {
+    //                 useBucket(tovec3d(result),
+    //                 waterBucket,
+    //                 true);
+    //             }
+
+    //         }
+    //         // Remove water
+    //         if (placedWater && mc.player.getBlockStateAtPos().getFluidState().getFluid() == Fluids.WATER) {
+    //             // useBucket(tovec3d(result), InvUtils.findInHotbar(Items.BUCKET), false);
+    //         }
+    //     }
+    // }
 
     private Vec3d tovec3d(BlockHitResult r) {
         return new Vec3d(

@@ -3,7 +3,8 @@ package dummy.addon.template;
 import dummy.addon.template.commands.ExampleCommand;
 import dummy.addon.template.modules.AnotherExample;
 import dummy.addon.template.modules.Example;
-import dummy.addon.template.modules.mlg;
+import dummy.addon.template.modules.NoFall;
+import dummy.addon.template.modules.Mlg;
 import dummy.addon.template.modules.hud.HudExample;
 import meteordevelopment.meteorclient.MeteorClient;
 import meteordevelopment.meteorclient.addons.MeteorAddon;
@@ -32,7 +33,8 @@ public class TemplateAddon extends MeteorAddon {
 		// Modules
 		Modules.get().add(new Example());
 		Modules.get().add(new AnotherExample());
-		Modules.get().add(new mlg());
+		Modules.get().add(new Mlg());
+		// Modules.get().add(new NoFall());
 
 		// Commands
 		Commands.get().add(new ExampleCommand());
