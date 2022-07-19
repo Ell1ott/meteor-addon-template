@@ -4,28 +4,22 @@
   "version": "${version}",
   "name": "Addon Template",
   "description": "An addon template for the Meteor addons.",
-  "authors": [
-    "seasnail8169"
-  ],
+  "authors": ["seasnail8169"],
   "contact": {
     "repo": "https://github.com/MeteorDevelopment/meteor-addon-template"
   },
   "icon": "assets/template/icon.png",
   "environment": "client",
   "entrypoints": {
-    "meteor": [
-      "dummy.addon.template.TemplateAddon"
-    ]
+    "meteor": ["dummy.addon.template.TemplateAddon"]
   },
-  "mixins": [
-    "template.mixins.json"
-  ],
+  "mixins": ["template.mixins.json"],
   "custom": {
     "meteor-client:color": "225,25,25"
   },
   "depends": {
     "java": ">=17",
-    "minecraft": ">=${mc_version}",
+    "minecraft": ">=1.19",
     "meteor-client": "*"
   }
 }
